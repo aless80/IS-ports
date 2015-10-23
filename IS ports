@@ -1,0 +1,90 @@
+// ==UserScript==
+// @name         IS ports
+// @namespace    http://your.homepage/
+// @version      0.1
+// @description  Add a small div on InterSystems web applications to be able to launch the same URL at a different port number
+// @author       Alessandro Marin
+// @match        
+// @include
+// @include      http://localhost:577*/csp/*
+// @grant        none
+// ==/UserScript==
+function getPort() {
+    var url=location.href;
+    var port=url.split(":")[2].split("/")[0];
+    console.log("getPort:",port)
+    return port;
+}
+
+function setPort(port) {
+    var url=location.href;
+    console.log("location.href=",url)
+    var http=url.split("//",2)[0];
+    var afterhttp=url.split("//",2)[1];
+    var ip=afterhttp.split(":")[0];
+    var afterip=afterhttp.split(":")[1];
+    var portinurl=afterip.split("/")[0];
+    var afterport=afterip.substr(portinurl.length);
+    var newurl=http+"//"+ip+":"+port+afterport;
+    console.log(newurl);
+    location.href=newurl;
+}
+
+var div = document.createElement("DIV");
+// Create a <button> element
+var btnp = document.createElement("BUTTON");
+var btnm = document.createElement("BUTTON");
+btnp.id="Ale_btnp";
+btnm.id="Ale_btnm";
+//Create an input field
+var input = document.createElement("INPUT");
+input.id="Ale_input";
+input.value=getPort();
+input.style.visibility = "hidden";
+input.style.width="40px";
+           
+// Create text nodes and append them to the buttons
+var tp = document.createTextNode("+");       
+var tm = document.createTextNode("-");       
+btnp.appendChild(tp);                                
+btnm.appendChild(tm);
+// Append stuff to the div
+div.appendChild(btnm);
+div.appendChild(btnp);
+div.appendChild(input);
+// Styles for the divs
+div.style.position = "absolute";
+div.style.left="450px";
+div.style.top="2px";
+//div.style.border="1px solid black";
+div.style.backgroundColor="lightgrey";
+div.style.padding="1px";
+//div.style.width="60px";
+//div.style.height="20px";
+document.body.appendChild(div);
+//Append onclick event
+btnp.onclick=function(){changePort(+1);};
+btnm.onclick=function(){changePort(-1);};
+	
+
+//variable to track the callback
+var timeout;
+//Launch url with new port number
+function changePort(increment){
+    clearTimeout(timeout);
+    input.value=Number(input.value)+increment;
+    input.style.visibility='visible';
+    timeout=setTimeout(function(){setPort(input.value)},650)
+}
+//Clicking on div shows the input field
+div.onclick=function(){
+    input.style.visibility = "visible";
+}
+//Press enter on input
+input.onkeyup=function(){
+    if (event.keyCode == 13){
+        var port=this.value;
+        if (port>57700 && port<57800)
+            setPort(port);
+    }
+}
