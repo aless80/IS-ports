@@ -64,8 +64,8 @@ div.style.padding="1px";
 div.style.width="48px";
 document.body.appendChild(div);
 //Append onclick event
-btnp.onclick=function(){changePort(+1);};
-btnm.onclick=function(){changePort(-1);};
+btnp.onclick=function(event){input.showInput();changePort(+1);};
+btnm.onclick=function(event){input.showInput();changePort(-1);};
 	
 
 //variable to track the callback
@@ -78,21 +78,33 @@ function changePort(increment){
     timeout=setTimeout(function(){setPort(input.value)},650)
 }
 //Clicking on div shows the input field
-div.onclick=function(){
-    console.log(input.style.visibility)
-    
+div.onclick=function(event){    
+    console.log(event.target.id.slice(0,7))
+    if (event.target.id.slice(0,7) == "Ale_btn"){
+        console.log("skip")
+        return;
+    }
+    console.log("no skip")
     if (input.style.visibility=='hidden'){
+        input.showInput();
+    } else if (input.style.visibility=='visible'){
+        input.hideInput();
+    }
+}
+input.showInput=function(){
+    console.log("showInput")
         input.style.width="40px";
         div.style.width="90px";
         input.style.visibility = "visible";
-    } else if (input.style.visibility=='visible'){
+}
+input.hideInput=function(){
+    console.log("hideInput")
         input.style.width="4px";
         div.style.width="49px";
         input.style.visibility = "hidden";
-    }
 }
 //Press enter on input
-input.onkeyup=function(){
+onkeyup=function(){
     if (event.keyCode == 13){
         var port=this.value;
         if (port>57700 && port<57800)
