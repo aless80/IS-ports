@@ -1,18 +1,21 @@
 // ==UserScript==
 // @name         IS ports
-// @namespace    http://your.homepage/
+// @namespace    https://github.com/aless80/IS-ports
 // @version      0.1
 // @description  Add a small div on InterSystems web applications to be able to launch the same URL at a different port number
 // @author       Alessandro Marin
 // @match        
-// @include
 // @include      http://localhost:577*/csp/*
 // @grant        none
+// @exclude      http*$ZEN_POPUP=1*
+// @exclude      http*://localhost:577*/csp/*$ZEN_POPUP=1*
+// @exclude      http*://localhost:57772/csp/samples/_DeepSee.UI.Dialog.CubeSave.cls?$ZEN_POPUP=1&$ZEN_SOFTMODAL=1&MODE=savecube&CUBE=NamesUS&CLASS=Ale.NamesUSCube&DESC=Grabs%20the%20data%20in%20http%3A%2F%2Fwww2.census.gov%2Ftopics%2Fgenealogy%2F1990surnames%2Fdist.male.first%0D%0Acantaining%20the%20frequency%20of%20first%20Names%20in%20the%20US%20in%201990%2C%20or%20something%20like%20that*
 // ==/UserScript==
+
+
 function getPort() {
     var url=location.href;
     var port=url.split(":")[2].split("/")[0];
-    console.log("getPort:",port)
     return port;
 }
 
@@ -29,7 +32,7 @@ function setPort(port) {
     console.log(newurl);
     location.href=newurl;
 }
-
+console.log("Tampermonkey script running on: "+location.href + " and port is: "+getPort())
 var div = document.createElement("DIV");
 // Create a <button> element
 var btnp = document.createElement("BUTTON");
@@ -41,7 +44,7 @@ var input = document.createElement("INPUT");
 input.id="Ale_input";
 input.value=getPort();
 input.style.visibility = "hidden";
-input.style.width="40px";
+input.style.width="4px";
            
 // Create text nodes and append them to the buttons
 var tp = document.createTextNode("+");       
@@ -56,11 +59,9 @@ div.appendChild(input);
 div.style.position = "absolute";
 div.style.left="450px";
 div.style.top="2px";
-//div.style.border="1px solid black";
 div.style.backgroundColor="lightgrey";
 div.style.padding="1px";
-//div.style.width="60px";
-//div.style.height="20px";
+div.style.width="48px";
 document.body.appendChild(div);
 //Append onclick event
 btnp.onclick=function(){changePort(+1);};
@@ -78,7 +79,17 @@ function changePort(increment){
 }
 //Clicking on div shows the input field
 div.onclick=function(){
-    input.style.visibility = "visible";
+    console.log(input.style.visibility)
+    
+    if (input.style.visibility=='hidden'){
+        input.style.width="40px";
+        div.style.width="90px";
+        input.style.visibility = "visible";
+    } else if (input.style.visibility=='visible'){
+        input.style.width="4px";
+        div.style.width="49px";
+        input.style.visibility = "hidden";
+    }
 }
 //Press enter on input
 input.onkeyup=function(){
