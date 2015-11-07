@@ -12,6 +12,8 @@
 // @exclude      http*://localhost:57772/csp/samples/_DeepSee.UI.Dialog.CubeSave.cls?$ZEN_POPUP=1&$ZEN_SOFTMODAL=1&MODE=savecube&CUBE=NamesUS&CLASS=Ale.NamesUSCube&DESC=Grabs%20the%20data%20in%20http%3A%2F%2Fwww2.census.gov%2Ftopics%2Fgenealogy%2F1990surnames%2Fdist.male.first%0D%0Acantaining%20the%20frequency%20of%20first%20Names%20in%20the%20US%20in%201990%2C%20or%20something%20like%20that*
 // ==/UserScript==
 
+if (window.top != window.self)  //don't run on frames or iframes
+    return;
 
 function getPort() {
     var url=location.href;
@@ -34,6 +36,7 @@ function setPort(port) {
 }
 console.log("Tampermonkey script running on: "+location.href + " and port is: "+getPort())
 var div = document.createElement("DIV");
+div.id="Ale_div";
 // Create a <button> element
 var btnp = document.createElement("BUTTON");
 var btnm = document.createElement("BUTTON");
@@ -45,7 +48,7 @@ input.id="Ale_input";
 input.value=getPort();
 input.style.visibility = "hidden";
 input.style.width="4px";
-           
+
 // Create text nodes and append them to the buttons
 var tp = document.createTextNode("+");       
 var tm = document.createTextNode("-");       
@@ -55,6 +58,7 @@ btnm.appendChild(tm);
 div.appendChild(btnm);
 div.appendChild(btnp);
 div.appendChild(input);
+
 // Styles for the divs
 div.style.position = "absolute";
 div.style.left="450px";
@@ -78,13 +82,10 @@ function changePort(increment){
     timeout=setTimeout(function(){setPort(input.value)},650)
 }
 //Clicking on div shows the input field
-div.onclick=function(event){    
-    console.log(event.target.id.slice(0,7))
-    if (event.target.id.slice(0,7) == "Ale_btn"){
-        console.log("skip")
-        return;
-    }
-    console.log("no skip")
+div.onclick=function(event){
+    console.log(event.target.id)//Ale_div
+    if (event.target.id.slice(0,7) == "Ale_btn") return;
+    if (event.target.id == "Ale_input") return;
     if (input.style.visibility=='hidden'){
         input.showInput();
     } else if (input.style.visibility=='visible'){
@@ -92,13 +93,11 @@ div.onclick=function(event){
     }
 }
 input.showInput=function(){
-    console.log("showInput")
         input.style.width="40px";
         div.style.width="90px";
         input.style.visibility = "visible";
 }
 input.hideInput=function(){
-    console.log("hideInput")
         input.style.width="4px";
         div.style.width="49px";
         input.style.visibility = "hidden";
@@ -106,8 +105,11 @@ input.hideInput=function(){
 //Press enter on input
 onkeyup=function(){
     if (event.keyCode == 13){
-        var port=this.value;
-        if (port>57700 && port<57800)
-            setPort(port);
+console.log("onkeyup event.keyCode="+event.keyCode)
+        var port=document.getElementById('Ale_input').value;
+        console.log("onkeyup port="+port)
+        if (port>57700 && port<57800){
+            console.log("onkeyup inside if="+port)
+            setPort(port);}
     }
 }
