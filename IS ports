@@ -34,6 +34,7 @@ function setPort(port) {
     console.log(newurl);
     location.href=newurl;
 }
+
 console.log("Tampermonkey script running on: "+location.href + " and port is: "+getPort())
 var div = document.createElement("DIV");
 div.id="Ale_div";
@@ -54,18 +55,22 @@ var tp = document.createTextNode("+");
 var tm = document.createTextNode("-");       
 btnp.appendChild(tp);                                
 btnm.appendChild(tm);
-// Append stuff to the div
+// Append buttons and input to the div
 div.appendChild(btnm);
 div.appendChild(btnp);
 div.appendChild(input);
 
-// Styles for the divs
+
+// Styles for the div
 div.style.position = "absolute";
 div.style.left="450px";
 div.style.top="2px";
 div.style.backgroundColor="lightgrey";
 div.style.padding="1px";
 div.style.width="48px";
+//Allow the div to be dragged
+div.setAttribute("draggable","true")
+div.ondragend=function(event){ document.getElementById(event.target.id).style.left=event.clientX-47+"px"; }
 document.body.appendChild(div);
 //Append onclick event
 btnp.onclick=function(event){input.showInput();changePort(+1);};
