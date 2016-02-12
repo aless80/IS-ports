@@ -38,6 +38,7 @@ function setPort(port) {
 console.log("Tampermonkey script running on: "+location.href + " and port is: "+getPort())
 var div = document.createElement("DIV");
 div.id="Ale_div";
+var span = document.createElement("SPAN");
 // Create a <button> element
 var btnp = document.createElement("BUTTON");
 var btnm = document.createElement("BUTTON");
@@ -56,9 +57,10 @@ var tm = document.createTextNode("-");
 btnp.appendChild(tp);                                
 btnm.appendChild(tm);
 // Append buttons and input to the div
-div.appendChild(btnm);
-div.appendChild(btnp);
-div.appendChild(input);
+div.appendChild(span)
+span.appendChild(btnm);
+span.appendChild(btnp);
+span.appendChild(input);
 
 
 // Styles for the div
@@ -67,7 +69,7 @@ div.style.left="450px";
 div.style.top="2px";
 div.style.backgroundColor="lightgrey";
 div.style.padding="1px";
-div.style.width="48px";
+//div.style.width="48px";
 //Allow the div to be dragged
 div.setAttribute("draggable","true")
 div.ondragend=function(event){ document.getElementById(event.target.id).style.left=event.clientX-47+"px"; }
@@ -108,9 +110,9 @@ input.hideInput=function(){
         input.style.visibility = "hidden";
 }
 //Press enter on input
-onkeyup=function(){
+div.onkeyup=function(){
     if (event.keyCode == 13){
-console.log("onkeyup event.keyCode="+event.keyCode)
+        console.log("onkeyup event.keyCode="+event.keyCode)
         var port=document.getElementById('Ale_input').value;
         console.log("onkeyup port="+port)
         if (port>57700 && port<57800){
