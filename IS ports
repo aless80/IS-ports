@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  Add a small div on InterSystems web applications to be able to launch the same URL at a different port number
 // @author       Alessandro Marin
-// @match        
+// @match
 // @include      http://localhost:577*/csp/*
 // @grant        none
 // @exclude      http*$ZEN_POPUP=1*
@@ -23,7 +23,7 @@ function getPort() {
 
 function setPort(port) {
     var url=location.href;
-    console.log("location.href=",url)
+    console.log("location.href=",url);
     var http=url.split("//",2)[0];
     var afterhttp=url.split("//",2)[1];
     var ip=afterhttp.split(":")[0];
@@ -35,7 +35,7 @@ function setPort(port) {
     location.href=newurl;
 }
 
-console.log("Tampermonkey script running on: "+location.href + " and port is: "+getPort())
+console.log("Tampermonkey script running on: "+location.href + " and port is: "+getPort());
 var div = document.createElement("DIV");
 div.id="Ale_div";
 var span = document.createElement("SPAN");
@@ -48,16 +48,19 @@ btnm.id="Ale_btnm";
 var input = document.createElement("INPUT");
 input.id="Ale_input";
 input.value=getPort();
-input.style.visibility = "hidden";
-input.style.width="4px";
+//input.style.visibility = "hidden";
+input.style.width="40px";
+input.style.height="24px";
+btnm.style="width:40px;height:30px;";
+btnp.style="width:40px;height:30px;";
 
 // Create text nodes and append them to the buttons
-var tp = document.createTextNode("+");       
-var tm = document.createTextNode("-");       
-btnp.appendChild(tp);                                
+var tp = document.createTextNode("+");
+var tm = document.createTextNode("-");
+btnp.appendChild(tp);
 btnm.appendChild(tm);
 // Append buttons and input to the div
-div.appendChild(span)
+div.appendChild(span);
 span.appendChild(btnm);
 span.appendChild(btnp);
 span.appendChild(input);
@@ -65,19 +68,23 @@ span.appendChild(input);
 
 // Styles for the div
 div.style.position = "absolute";
-div.style.left="450px";
-div.style.top="2px";
-div.style.backgroundColor="lightgrey";
-div.style.padding="1px";
-//div.style.width="48px";
+div.style.left = "450px";
+div.style.top = "2px";
+div.style.backgroundColor = "lightgrey";
+div.style.padding = "1px";
+div.style.opacity=0.0;
+//div.style.display="inline-block";
+
 //Allow the div to be dragged
-div.setAttribute("draggable","true")
-div.ondragend=function(event){ document.getElementById(event.target.id).style.left=event.clientX-47+"px"; }
+div.setAttribute("draggable","true");
+div.ondragend=function(event){
+    document.getElementById(event.target.id).style.left = event.clientX - 47 + "px";
+};
 document.body.appendChild(div);
 //Append onclick event
 btnp.onclick=function(event){input.showInput();changePort(+1);};
 btnm.onclick=function(event){input.showInput();changePort(-1);};
-	
+
 
 //variable to track the callback
 var timeout;
@@ -86,37 +93,35 @@ function changePort(increment){
     clearTimeout(timeout);
     input.value=Number(input.value)+increment;
     input.style.visibility='visible';
-    timeout=setTimeout(function(){setPort(input.value)},650)
+    timeout=setTimeout(function(){setPort(input.value);},650);
 }
-//Clicking on div shows the input field
-div.onclick=function(event){
-    console.log(event.target.id)//Ale_div
-    if (event.target.id.slice(0,7) == "Ale_btn") return;
-    if (event.target.id == "Ale_input") return;
-    if (input.style.visibility=='hidden'){
-        input.showInput();
-    } else if (input.style.visibility=='visible'){
-        input.hideInput();
-    }
-}
+//Entering/exiting the div makes it visible/hidden
+div.onmouseenter=function(event){
+    console.log('over event.target.id='+event.target.id);
+    this.style.opacity=1.0;
+};
+div.onmouseleave=function(event){
+    console.log('out event.target.id='+event.target.id);
+    setTimeout(function(){document.getElementById("Ale_div").style.opacity=0.0;},500);
+};
+
 input.showInput=function(){
         input.style.width="40px";
         div.style.width="90px";
         input.style.visibility = "visible";
-}
+};
 input.hideInput=function(){
         input.style.width="4px";
         div.style.width="49px";
         input.style.visibility = "hidden";
-}
+};
 //Press enter on input
 div.onkeyup=function(){
     if (event.keyCode == 13){
-        console.log("onkeyup event.keyCode="+event.keyCode)
+        console.log("onkeyup event.keyCode="+event.keyCode);
         var port=document.getElementById('Ale_input').value;
-        console.log("onkeyup port="+port)
         if (port>57700 && port<57800){
-            console.log("onkeyup inside if="+port)
+            console.log("onkeyup inside if="+port);
             setPort(port);}
     }
-}
+};
