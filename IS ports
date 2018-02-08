@@ -65,6 +65,7 @@ span.appendChild(input);
 
 // Styles for the div
 div.style.position = "absolute";
+div.style.whiteSpace = "nowrap";
 div.style.left="450px";
 div.style.top="2px";
 div.style.backgroundColor="lightgrey";
