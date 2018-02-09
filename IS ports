@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  Add a small div on InterSystems web applications to be able to launch the same URL at a different port number
 // @author       Alessandro Marin
-// @match        
+// @match
 // @include      http://localhost:577*/csp/*
 // @grant        none
 // @exclude      http*$ZEN_POPUP=1*
@@ -65,15 +65,25 @@ span.appendChild(input);
 
 // Styles for the div
 div.style.position = "absolute";
-div.style.whiteSpace = "nowrap";
 div.style.left="450px";
 div.style.top="2px";
 div.style.backgroundColor="lightgrey";
+div.style.whiteSpace = "nowrap";
 div.style.padding="1px";
-//div.style.width="48px";
 //Allow the div to be dragged
 div.setAttribute("draggable","true");
-div.ondragend=function(event){ document.getElementById(event.target.id).style.left=event.clientX-47+"px"; };
+//The following is necessary in firefox
+div.addEventListener("dragstart", function (e) {
+    e.dataTransfer.setData("Text", this.id);
+  }
+);
+div.ondragend=function(event){
+    if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        document.getElementById(event.target.id).style.left = event.screenX-this.offsetWidth-47+"px";
+    } else {
+        document.getElementById(event.target.id).style.left=event.clientX-47+"px";
+    }
+};
 document.body.appendChild(div);
 //Append onclick event
 btnp.onclick=function(event){input.showInput();changePort(+1);};
