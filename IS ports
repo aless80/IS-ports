@@ -104,12 +104,10 @@ div.onclick=function(event){
 };
 input.showInput=function(){
         input.style.width="40px";
-        div.style.width="90px";
         input.style.visibility = "visible";
 };
 input.hideInput=function(){
         input.style.width="4px";
-        div.style.width="49px";
         input.style.visibility = "hidden";
 };
 //Press enter on input
